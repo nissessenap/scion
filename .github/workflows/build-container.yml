@@ -127,4 +127,4 @@ jobs:
         run: |
           echo "Signing manifest index: ${REPO}@${DIGEST}"
           cosign sign --yes "${REPO}@${DIGEST}"
-          echo "To verify: cosign verify --certificate-oidc-issuer https://token.actions.githubusercontent.com --certificate-identity-regexp 'github.com/GoogleCloudPlatform/scion' ${REPO}@${DIGEST}"
+          echo "To verify: cosign verify --certificate-oidc-issuer https://token.actions.githubusercontent.com --certificate-identity-regexp 'github.com/${{ github.repository }}' ${REPO}@${DIGEST}"
