@@ -17,9 +17,7 @@ name: Build Hub Container Image
 on:
   push:
     tags:
-      - '*'
-
-permissions: {}
+      - "*"
 
 jobs:
   build:
@@ -41,15 +39,15 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: 'go.mod'
+          go-version-file: "go.mod"
           cache: true
 
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          cache: 'npm'
-          cache-dependency-path: 'web/package-lock.json'
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: "web/package-lock.json"
 
       - name: Build Web UI
         working-directory: ./web
@@ -80,7 +78,7 @@ jobs:
       - name: Build and push image
         id: build-image
         env:
-          KO_DOCKER_REPO: ghcr.io/googlecloudplatform/scion
+          KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
           VERSION: ${{ steps.meta.outputs.version }}
           COMMIT: ${{ steps.meta.outputs.commit }}
           BUILD_TIME: ${{ steps.meta.outputs.build_time }}
@@ -125,7 +123,7 @@ jobs:
       - name: Sign manifest index
         env:
           DIGEST: ${{ needs.build.outputs.digest }}
-          REPO: ghcr.io/googlecloudplatform/scion
+          REPO: ghcr.io/${{ github.repository }}
         run: |
           echo "Signing manifest index: ${REPO}@${DIGEST}"
           cosign sign --yes "${REPO}@${DIGEST}"

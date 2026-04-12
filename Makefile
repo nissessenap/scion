@@ -14,7 +14,7 @@ GOLANGCI_LINT := $(shell command -v golangci-lint 2>/dev/null || echo $(shell go
 
 .DEFAULT_GOAL := help
 
-.PHONY: all build install test test-fast vet lint golangci-lint web web-typecheck fmt fmt-check ci ci-full clean help container-sciontool container-scion container-binaries ko-build-local ko-build-push
+.PHONY: all build install test test-fast vet lint golangci-lint web web-typecheck fmt fmt-check ci ci-full clean help container-sciontool container-scion container-binaries ko-build-local
 
 ## all: Build the web frontend, then compile the Go binary with embedded assets
 all: web install
@@ -101,19 +101,6 @@ ko-build-local:
 		BUILD_TIME=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
 		KO_DOCKER_REPO=ko.local \
 		ko build ./cmd/scion --bare --local
-
-## ko-build-push: Build and push the hub container image with ko
-ko-build-push:
-	@if [ -z "$$KO_DOCKER_REPO" ]; then echo "ERROR: Set KO_DOCKER_REPO (e.g., ghcr.io/yourorg/scion)"; exit 1; fi
-	@echo "Building web frontend for container..."
-	@cd web && npm install && npm run build
-	@echo "Building and pushing hub container image with ko..."
-	@TAG=$$(git describe --tags --exact-match 2>/dev/null || echo "dev"); \
-		VERSION=$$TAG \
-		COMMIT=$$(git rev-parse HEAD 2>/dev/null || echo "unknown") \
-		BUILD_TIME=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-		ko build ./cmd/scion --bare --tags="$$TAG" --platform=linux/amd64,linux/arm64
-	@echo "Pushed to $$KO_DOCKER_REPO"
 
 ## web-typecheck: Run TypeScript type checking on the web frontend
 web-typecheck:
