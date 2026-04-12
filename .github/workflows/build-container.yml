@@ -96,8 +96,8 @@ jobs:
             --image-label org.opencontainers.image.version=${VERSION} \
             --image-label org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
-          # Extract manifest index digest for signing
-          MANIFEST_DIGEST=$(cat ./image-digest | cut -d@ -f2)
+          # Extract manifest index digest for signing (first line is the index)
+          MANIFEST_DIGEST=$(head -1 ./image-digest | cut -d@ -f2)
           echo "digest=${MANIFEST_DIGEST}" >> "$GITHUB_OUTPUT"
           echo "Manifest index digest: ${MANIFEST_DIGEST}"
 
